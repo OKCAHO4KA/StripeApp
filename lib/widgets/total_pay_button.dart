@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sptripe_app/bloc/pagar/pagar_bloc.dart';
 
 class TotalPayButton extends StatelessWidget {
   const TotalPayButton({super.key});
@@ -18,10 +20,10 @@ class TotalPayButton extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30), topRight: Radius.circular(30)),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
+          const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -33,19 +35,24 @@ class TotalPayButton extends StatelessWidget {
               ),
             ],
           ),
-          BtnPay(),
+          BlocBuilder<PagarBloc, PagarState>(
+              builder: (BuildContext context, state) {
+            return _BtnPay(state);
+          }),
         ],
       ),
     );
   }
 }
 
-class BtnPay extends StatelessWidget {
-  const BtnPay({super.key});
-
+class _BtnPay extends StatelessWidget {
+  const _BtnPay(this.state);
+  final PagarState state;
   @override
   Widget build(BuildContext context) {
-    return true ? buildBotonTarjeta(context) : buildAppleAndAndroidPay(context);
+    return !state.tarjetaActiva!
+        ? buildBotonTarjeta(context)
+        : buildAppleAndAndroidPay(context);
   }
 
   Widget buildBotonTarjeta(BuildContext context) {
